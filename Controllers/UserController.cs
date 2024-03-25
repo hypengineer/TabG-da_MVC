@@ -39,27 +39,8 @@ namespace TabGıda.Controllers
             return View(users);
         }
 
-        // GET: User/Details/5
-        [Authorize(Policy = "CompanyAccess")]
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null || _signInManager.UserManager.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _signInManager.UserManager.Users
-                .Include(u => u.Company)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-
-
-            return View(user);
-        }
+        
+      
 
         // GET: User/Create
         [Authorize(Policy = "CompanyAccess")]
@@ -98,7 +79,7 @@ namespace TabGıda.Controllers
         [Authorize(Policy = "CompanyAccess")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,isDeleted,isActive,UserName,Email,PhoneNumber,CompanyId,RoleId")] User user, string password, string selectedRole, Guid RestaurantId)
+        public async Task<IActionResult> Create([Bind("Name,UserName,Email,PhoneNumber,CompanyId,RoleId")] User user, string password, string selectedRole, Guid RestaurantId)
         {
             
             if (ModelState.IsValid)
@@ -106,7 +87,7 @@ namespace TabGıda.Controllers
                 await _signInManager.UserManager.CreateAsync(user, password);
                 var role = await _roleManager.FindByIdAsync(selectedRole);
                 
-                
+                //Composit key ile birbirine bağlı tabloya veri ekleyip idleri eşleştirmek
                 if (role != null)
                 {
                     if (role.Name== "Manager")
@@ -163,7 +144,7 @@ namespace TabGıda.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "CompanyAccess")]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,isDeleted,isActive,UserName,Email,PhoneNumber,CompanyId,RoleId")] User user,string selectedRole)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,isActive,UserName,Email,PhoneNumber,CompanyId,RoleId")] User user,string selectedRole)
         {
             if (id != user.Id)
             {

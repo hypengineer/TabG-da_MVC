@@ -1,38 +1,82 @@
 ﻿@model IEnumerable<TabGıda.Models.Food>
 
-<div class="row pb-3">
-    @foreach (var food in Model)
+<style>
+    .category-container {
+        background-color: #f9f9f9; /* Alanın arka plan rengi */
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1); /* Alanın gölgesi */
+    }
+
+    .category-section {
+        margin-bottom: 40px;
+    }
+
+    .category-title {
+        font-size: 24px;
+        font-weight: bold;
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .food-card {
+        width: 100%;
+        height: auto;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
+        }
+
+    .food-image {
+        width: 100%;
+        height: 200px; /* Fotoğraf yüksekliği ayarlanabilir */
+        object-fit: cover;
+    }
+
+    .food-details {
+        padding: 1rem;
+    }
+
+    .food-name {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0.5rem;
+    }
+
+    .food-price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #f00; /* Fiyat rengi ayarlanabilir */
+    }
+</style>
+
+<div class="container py-4 category-container">
+    @foreach (var group in Model.GroupBy(food => food.Category.Name))
     {
-        <div class="col-lg-3 col-sm-6">
-            <div class="row p-2">
-                <div class="col-12 p-1">
-                    <div class="card border-0 p-3 shadow border-top border-5 rounded">
-                        <img src="@food.ImageUrl" class="card-img-top rounded" height="250" weight="Auto" />
-                        <div class="card-body pb-0">
-                            <div class="pl-1">
-                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@food.Category.Name</p>
-                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@food.Name</p>
+        <div class="category-section">
+            <h2 class="text-uppercase category-title">@group.Key</h2>
+            <div class="row pb-3">
+                @foreach (var food in group.OrderByDescending(f=>f.Price))
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="food-card">
+                            <img src="@food.ImageUrl" class="food-image" alt="@food.Name" />
+                            <div class="food-details">
+                                <h5 class="food-name">@food.Name</h5>
+                                <p class="food-price">@food.Price.ToString("c")</p>
+                                <a asp-controller="Food" asp-action="Details" asp-route-id="@food.Id" class="btn btn-primary btn-block">Detaylar</a>
                             </div>
-                            <div class="pl-1">
-                                <p class="text-dark text-opacity-75  text-center mb-0">
-                                    Fiyat:
-                                    <span class="text-dark text-opacity-75  text-center">
-                                        @food.Price.ToString("c")
-                                    </span>
-                                </p>
-
-
-                            </div>
-                        </div>
-                        <div>
-                            <a asp-action="Details"
-                               asp-route-foodId="@food.Id" class="btn btn-primary bg-gradient border-0 form-control">
-                                Details
-                            </a>
-
                         </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     }

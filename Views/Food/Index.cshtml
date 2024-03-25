@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <div>
@@ -43,7 +44,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    string imagePath = "images/" + @item.Id.ToString() + ".jpg";
+                    string imagePath = "../images/" + @item.Id.ToString() + ".jpg";
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.Price)
@@ -62,7 +63,7 @@
                             @Html.DisplayFor(modelItem => item.isActive)
                         </td>
                         <td>
-                            <img src="@imagePath" height="125" />
+                                <img src="@imagePath" height="125px" width="auto" />
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.DateCreated)
@@ -72,7 +73,9 @@
                                 <a asp-controller="Food" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mx-2">
                                     <i class="bi bi-pencil-square"> </i>Edit
                                 </a>
-                               
+                                    <a asp-controller="Food" asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary mx-2">
+                                        <i class="bi bi-info"></i> Details
+                                    </a>
                                 <a asp-controller="Food" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mx-2">
                                     <i class="bi bi-trash"></i> Delete
                                 </a>

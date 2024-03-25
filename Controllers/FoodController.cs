@@ -67,7 +67,21 @@ namespace TabGıda.Controllers
             return View(nullfoods);
         }
 
+
+        public IActionResult Details(Guid id)
+        {
+            Food? food = _context.Foods!.Where(f => f.Id == id).Include(f => f.Category).FirstOrDefault();
+
+            if (food == null)
+            {
+                return NotFound();
+            }
+            return View(food);
+        }
+
        
+
+
 
         // GET: Foods/Create
         public async Task<IActionResult> Create()
@@ -102,23 +116,28 @@ namespace TabGıda.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Price,Description,CategoryId,Id,Name,ImageUrl")] Food food, IFormFile picture)
+        public async Task<IActionResult> Create([Bind("Price,Description,CategoryId,Id,Name,ImageUrl")] Food food, IFormFile? picture)
         {
-            FileStream fileStream;
             if (ModelState.IsValid)
             {
                 food.Id = Guid.NewGuid();
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
                 string foodPath = Path.Combine(wwwRootPath, @"images");
                 string fileName = food.Id.ToString() + ".jpg";
-                fileStream = new FileStream(Path.Combine(foodPath, fileName), FileMode.CreateNew);
-                picture.CopyTo(fileStream);
+                string filePath = Path.Combine(foodPath, fileName);
 
-                fileStream.Close();
-                food.ImageUrl = @"images\" + fileName;
+                // Fotoğrafı kaydet
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await picture.CopyToAsync(fileStream);
+                }
+
+
+                // ImageUrl'yi ayarla
+                food.ImageUrl = Path.Combine(@"\images", fileName);
 
                 _context.Add(food);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -164,7 +183,7 @@ namespace TabGıda.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Price,Description,CategoryId,Id,Name,isActive,ImageUrl")] Food food, IFormFile picture)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Price,Description,CategoryId,Id,Name,isActive,ImageUrl")] Food food, IFormFile? picture)
         {
             if (id != food.Id)
             {
@@ -195,7 +214,7 @@ namespace TabGıda.Controllers
                         using (var fileStream = new FileStream(Path.Combine(foodPath, fileName), FileMode.Create))
                         {
                             await picture.CopyToAsync(fileStream);
-                            food.ImageUrl = @"images\" + fileName;
+                            food.ImageUrl = Path.Combine(@"\images", fileName);
                         }
                     }
 
