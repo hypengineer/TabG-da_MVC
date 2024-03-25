@@ -1,0 +1,39 @@
+﻿@model IEnumerable<TabGıda.Models.Food>
+
+<div class="row pb-3">
+    @foreach (var food in Model)
+    {
+        <div class="col-lg-3 col-sm-6">
+            <div class="row p-2">
+                <div class="col-12 p-1">
+                    <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                        <img src="@food.ImageUrl" class="card-img-top rounded" height="250" weight="Auto" />
+                        <div class="card-body pb-0">
+                            <div class="pl-1">
+                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@food.Category.Name</p>
+                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@food.Name</p>
+                            </div>
+                            <div class="pl-1">
+                                <p class="text-dark text-opacity-75  text-center mb-0">
+                                    Fiyat:
+                                    <span class="text-dark text-opacity-75  text-center">
+                                        @food.Price.ToString("c")
+                                    </span>
+                                </p>
+
+
+                            </div>
+                        </div>
+                        <div>
+                            <a asp-action="Details"
+                               asp-route-foodId="@food.Id" class="btn btn-primary bg-gradient border-0 form-control">
+                                Details
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
