@@ -159,7 +159,7 @@
                     <!-- Left Menu Start -->
                     <ul class="metismenu list-unstyled" id="side-menu">
                         <li class="menu-title">Menu</li>
-                        @if (AuthorizationService.AuthorizeAsync(User, "CompanyAccess").Result.Succeeded)
+                        @if(User.IsInRole("Administrator")||User.IsInRole("Admin")||User.IsInRole("Company Admin"))
                         {
                             <li>
                                 <a asp-action="Index" asp-controller="User">
@@ -177,16 +177,16 @@
                             </a>
                            
                                 <ul class="sub-menu" aria-expanded="true">
-                                    @if (AuthorizationService.AuthorizeAsync(User, "AdminAccess").Result.Succeeded)
+                                    @if (User.IsInRole("Administrator") || User.IsInRole("Admin") )
                                     {
                                         <li><a asp-controller="Company" asp-action="Index">Companies</a></li>
                                     }
-                                    else if (AuthorizationService.AuthorizeAsync(User, "CompanyAccess").Result.Succeeded)
+                                    @if (User.IsInRole("Administrator") || User.IsInRole("Admin") || User.IsInRole("Company Admin"))
                                     {
                                         <li><a asp-controller="Restaurant" asp-action="Index">Restaurants</a></li>
 
                                     }
-                                    else if (AuthorizationService.AuthorizeAsync(User, "ManagerAccess").Result.Succeeded)
+                                    @if (User.IsInRole("Company Admin")||User.IsInRole("Manager"))
                                     {
                                         <li><a asp-controller="Category" asp-action="Index">Categories</a></li>
                                         <li><a asp-controller="Food" asp-action="Index">Foods</a></li>
